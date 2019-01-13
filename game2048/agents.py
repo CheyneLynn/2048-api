@@ -1,5 +1,9 @@
 import numpy as np
+from keras.models import load_model
+# model1 = load_model('E:/PyCharm 2018.2.4/2048_game/game2048/model_64_256_fifth.h5')
+# model2 = load_model('E:/PyCharm 2018.2.4/2048_game/game2048/model_0_512_2.h5')
 
+model = load_model('E:/PyCharm 2018.2.4/2048_game/game2048/model_0_512_2.h5')
 
 class Agent:
     '''Agent Base.'''
@@ -30,6 +34,22 @@ class RandomAgent(Agent):
 
     def step(self):
         direction = np.random.randint(0, 4)
+        return direction
+
+
+# 定义自己的agent
+class MyOwnAgent(Agent):
+
+    def __init__(self, game, display=None):
+        super().__init__(game, display)
+        self.board = self.game.board
+        self.model = model
+
+    def predict(self):
+        return self.model.predict_on_batch(np.log2(self.game.board_log)[np.newaxis, :, :, np.newaxis])  # 棋盘取对数后进行预测
+
+    def step(self):
+        direction = self.predict().argmax()
         return direction
 
 

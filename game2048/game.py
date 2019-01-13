@@ -63,10 +63,18 @@ class Game:
         i.e. board[1,3]=2, will not raise error.'''
         return self.__board.copy()
 
+    @property
+    def board_log(self):
+        board = self.board
+        ret = []
+        for r in board:
+            ret.append([int(c) + (int(c) == 0) for c in r])   # 把棋盘上的0变成1，方便后续取对数
+        return ret
+
     @board.setter
     def board(self, x):
         if self.enable_rewrite_board:
-            assert self.__board.shape == x.shape
+            assert self.__board.shape == x.shape   # 维度
             self.__board = x.astype(self.__board.dtype)
         else:
             print("Disable to rewrite `board` manually.")
